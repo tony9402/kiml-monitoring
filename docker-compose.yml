@@ -1,0 +1,15 @@
+version: "3"
+services:
+
+  kiml-api:
+    networks:
+      - kiml
+    build:
+      context: .
+      dockerfile: kiml-api/kiml-api.Dockerfile
+    ports:
+      - 12345:12345
+
+networks:
+  kiml:
+    driver: bridge
