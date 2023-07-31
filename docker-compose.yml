@@ -2,13 +2,40 @@ version: "3"
 services:
 
   kiml-api:
-    networks:
-      - kiml
     build:
       context: .
       dockerfile: kiml-api/kiml-api.Dockerfile
     ports:
       - 12345:12345
+    networks:
+      - kiml
+  
+  postgres:
+    build:
+      context: .
+      dockerfile: kiml-database/kiml-database.Dockerfile
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: kimlpassword
+    ports:
+      - "35432:5432"
+    volumes:
+      - ./database_data/postgres:/var/lib/postgresql/data
+    networks:
+      - kiml
+
+  # Redis
+  redis-job-database:
+    container_name: redis-share-database
+    image: redis:6.0.20
+    restart: always
+    command: redis-server --port 6379 --requirepass "kimlpassword" --appendonly yes
+    ports:
+      - "35379:6379"
+    volumes:
+      - ./database/redis/data:/data
+    networks:
+      - kiml
 
 networks:
   kiml:

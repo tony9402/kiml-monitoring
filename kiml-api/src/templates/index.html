@@ -1,0 +1,159 @@
+<link rel="icon" href="https://avatars.githubusercontent.com/u/30228292?s=96&v=4"/>
+<title>Dashboard</title>
+<meta http-equiv="refresh" content="60">
+<div class="container">
+    <div class="table-container">
+        <table>
+            <th>seq</th>
+            <th>status</th>
+            <th>workspace</th>
+            <th>run name</th>
+            <th>experiment name</th>
+            <th>image</th>
+            <th>instance type</th>
+            <th>create time</th>
+            <th>start time</th>
+            <th>end time</th>
+            <th>elapsed time</th>
+            <th>tensorboard</th>
+            {% for info in logs %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td class="run_status">{{info.run_status}}</td>
+                <td>{{info.workspace}}</td>
+                <td>{{info.run_name}}</td>
+                <td>{{info.experiment_name}}</td>
+                <td>{{info.image}}</td>
+                <td>{{info.instance_type}}</td>
+                <td>{{info.create_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+                <td class="start_time">{{info.start_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+                <td class="end_time">{{info.end_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+                <td class="elapsed_time"></td>
+                <td><a href="https://tensorboard.ml.kakaoicloud-kr-gov.com/{{info.experiment_id}}/tensorboard/#scalars&_smoothingWeight=0" target="_blank">Link</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+
+<style>
+    body {
+        margin: 0;
+        overflow: auto hidden;
+    }
+    .container {
+        width: max(100%, 1800px);
+        height: max(100%, 500px);
+        margin: 0 auto;
+        /*border: dashed 1px black;*/
+    }
+    .table-container {
+        width: 100%;
+        height: 100%; 
+        overflow: auto;
+        /*border: dashed 1px green;*/
+    }
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+    th {
+        border: 0.5px solid;
+        border-spacing: 0;
+    }
+    td, tr {
+        border: 0.5px solid;
+    }
+    button#update {
+        font-size: 12px;
+        width: 100%;
+        height: 23px;
+        background: none;
+    }
+    th, tr, td {
+        text-align: center;
+    }
+    th {
+        position: sticky;
+        top: 0;
+        background-color: white !important;
+    }
+</style>
+
+<script>
+function displayToggle() {
+    var a = document.getElementsByClassName('finetuned_path');
+    var cur_style;
+    if(a.length > 0) {
+        cur_style = a[0].style.display;
+    }
+    if(cur_style == undefined) return
+    if(cur_style == 'block') cur_style = 'none';
+    else cur_style = 'block';
+    for(var i = 0; i < a.length; i++) {
+        a[i].style.display = cur_style;
+    }
+}
+function time_to_string(time) {
+    var hour = parseInt(time / 60);
+    var minute = parseInt(time) % 60;
+    var second = parseInt((time - parseInt(time)) * 60 + 0.5);
+    if(minute < 10) minute = `0${minute}`;
+    else minute = `${minute}`
+    if(second < 10) second = `0${second}`;
+    else second = `${second}`
+    return `${hour}시간 ${minute}분 ${second}초`;
+}
+function update_time() {
+    var start_time_list = document.getElementsByClassName('start_time');
+    var end_time_list = document.getElementsByClassName('end_time');
+    var elapsed_time_list = document.getElementsByClassName('elapsed_time');
+    var run_status = document.getElementsByClassName('run_status');
+    for(var i=0; i<start_time_list.length; i++) {
+        var start_time;
+        if(start_time_list[i].innerHTML == "") {
+            start_time = new Date();
+        }
+        else {
+            start_time = new Date(start_time_list[i].innerHTML);
+        }
+        var end_time;
+        if(end_time_list[i].innerHTML == "") {
+            end_time = new Date();
+            if(run_status[i].innerHTML == "Running") end_time_list[i].setAttribute('style', 'background-color: #C6E0B4');
+            else  end_time_list[i].setAttribute('style', 'background-color: #FF908C');
+        }
+        else {
+            end_time = new Date(end_time_list[i].innerHTML);
+            end_time_list[i].removeAttribute('style');
+        }
+        var elapsed_time = parseInt((end_time.getTime() - start_time.getTime()) / 1000 / 60 * 100 + 0.5) / 100;
+        if(end_time_list[i].innerHTML == ""&& run_status[i].innerHTML != "Running") {
+            elapsed_time_list[i].innerHTML = "<p style=\"color: red\"><b>Unexpected Error</b></p>"
+        } 
+        else {
+            elapsed_time_list[i].innerHTML = time_to_string(elapsed_time);
+        }
+    }
+}
+window.addEventListener('DOMContentLoaded', function() {
+    var run_status = document.getElementsByClassName('run_status');
+    for(var i=0; i<run_status.length; i++){
+        if(run_status[i].innerHTML == "Failed") {
+            run_status[i].setAttribute('style', 'background-color: #FF908C; font-weight: bold') // RED
+        }
+        else if(run_status[i].innerHTML == "Completed") {
+            run_status[i].setAttribute('style', 'background-color: #DDEBF7') // BLUE
+        }
+        else if(run_status[i].innerHTML == "Stopped") {
+            run_status[i].setAttribute('style', 'background-color: #FFF2CC') // YELLO
+        }
+        else if(run_status[i].innerHTML == "Running") {
+            run_status[i].setAttribute('style', 'background-color: #C6E0B4') // GREEN
+        }
+    }
+    update_time();
+});
+setInterval(update_time, 1000);
+</script>
