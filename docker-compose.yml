@@ -1,0 +1,74 @@
+version: "3"
+services:
+
+  kiml-api:
+    build:
+      context: .
+      dockerfile: kiml-api/kiml-api.Dockerfile
+    ports:
+      - 8000:8000
+    networks:
+      - kiml
+  
+  postgres:
+    container_name: postgresdb
+    build:
+      context: .
+      dockerfile: kiml-database/kiml-database.Dockerfile
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: kimlpassword
+    ports:
+      - "35432:5432"
+    volumes:
+      - ./database_data/postgres:/var/lib/postgresql/data
+    networks:
+      - kiml
+
+  redis-job-database:
+    container_name: redis-share-database
+    image: redis:6.0.20
+    restart: always
+    command: redis-server --port 6379 --requirepass "kimlpassword" --appendonly yes --appendfsync always
+    ports:
+      - "35379:6379"
+    volumes:
+      - ./database_data/redis/data:/data
+    networks:
+      - kiml
+
+  consumer-batch:
+    build:
+      context: .
+      dockerfile: consumer/consumer-batch.Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - kiml
+
+  consumer-submit:
+    build:
+      context: .
+      dockerfile: consumer/consumer-submit.Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - kiml
+
+  consumer-update:
+    build:
+      context: .
+      dockerfile: consumer/consumer-update.Dockerfile
+    environment:
+      - PYTHONUNBUFFERED=1
+      - HOME=/consumer_update
+    networks:
+      - kiml
+
+networks:
+  default:
+    external: true
+    name: kiml
+  kiml:
+    driver: bridge

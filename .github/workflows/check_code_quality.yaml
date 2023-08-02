@@ -1,0 +1,48 @@
+name: Check Code Quality
+
+on:
+  push:
+    branches: [main, develop]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: develop
+        uses: actions/checkout@v2
+        with:
+          ref: develop
+      - name: Install black, flake8, isort, mypy
+        run: pip install black flake8 isort mypy
+
+  check-code-format:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: run black
+        run: black **/*.py --check
+
+  check-imports:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: run isort
+        run: isort **/*.py --check-only
+
+  check-pep8:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: run flake8
+        run: flake8 **/*.py
+
+  check-mypy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: run mypy [consumer]
+        run: mypy consumer --install-types --non-interactive --ignore-missing-import
+      - name: run mypy [kiml-api]
+        run: mypy kiml-api --install-types --non-interactive --ignore-missing-import
+      - name: run mypy [submit]
+        run: mypy submit --install-types --non-interactive --ignore-missing-import

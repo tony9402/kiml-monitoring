@@ -1,0 +1,23 @@
+runs:
+
+  - github_url: https://<github_id>:<github_token>@<repository-url>
+    run_name:
+    experiment_name:
+    image: 
+    instance_type: 
+    dataset:
+      - first-dataset
+      - second-dataset
+    source_directory: 
+    command: 
+
+- github_url: https://<github_id>:<github_token>@<repository-url>
+    run_name:
+    experiment_name:
+    image: 
+    instance_type: 
+    dataset:
+      - first-dataset
+      - second-dataset
+    source_directory: 
+    command: 
