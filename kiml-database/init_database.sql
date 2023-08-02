@@ -25,11 +25,11 @@ SET default_table_access_method = heap;
 --
 
 CREATE TABLE public."status" (
-    id bigint NOT NULL,
-    uuid character varying,
+    uuid character varying NOT NULL,
     status character varying NOT NULL,
     run_name character varying NOT NULL,
     experiment_name character varying NOT NULL,
+    experiment_id character varying NOT NULL,
     image character varying NOT NULL,
     instance_type character varying NOT NULL,
     create_time timestamp without time zone,
@@ -62,10 +62,18 @@ COMMENT ON COLUMN public."status".run_name IS '실행 이름';
 
 
 --
--- Name: COLUMN "status".status_name; Type: COMMENT; Schema: public; Owner: postgres
+-- Name: COLUMN "status".experiment_name; Type: COMMENT; Schema: public; Owner: postgres
 --
 
-COMMENT ON COLUMN public."status".status_name IS '실험 이름';
+COMMENT ON COLUMN public."status".experiment_name IS '실험 이름';
+
+
+--
+-- Name: COLUMN "status".experiment_id; Type: COMMENT; Schema: public; Owner: postgres
+--
+
+COMMENT ON COLUMN public."status".experiment_id IS '실험 id';
+
 
 --
 -- Name: COLUMN "status".image; Type: COMMENT; Schema: public; Owner: postgres
@@ -102,45 +110,8 @@ COMMENT ON COLUMN public."status".start_time IS '실험 시작 시각';
 COMMENT ON COLUMN public."status".end_time IS '실험 종료 시각';
 
 
-
-
-
-
-
---
--- Name: status_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.status_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.status_id_seq OWNER TO postgres;
-
---
--- Name: status_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.status_id_seq OWNED BY public."status".id;
-
-
---
--- Name: status id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."status" ALTER COLUMN id SET DEFAULT nextval('public.status_id_seq'::regclass);
-
-
---
--- Name: status status_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
 ALTER TABLE ONLY public."status"
-    ADD CONSTRAINT status_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT status_pkey PRIMARY KEY (uuid);
 
 
 --

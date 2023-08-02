@@ -1,17 +1,16 @@
+import os
+
+import uvicorn
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from starlette.middleware.cors import CORSMiddleware
-from dotenv import load_dotenv
 
-from routers import experiment, login, status, dashboard
+from routers import dashboard, submit
 
-
-load_dotenv()
 app = FastAPI()
 
-origins = [
-    "http:///127.0.0.1:12345"
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,13 +20,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(experiment.router)
-app.include_router(login.router)
-app.include_router(status.router)
 app.include_router(dashboard.router)
+app.include_router(submit.router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app=app, host="0.0.0.0", port=12345)
+    load_dotenv()
+    uvicorn.run(
+        app=app, 
+        host=os.environ["API_HOST"], 
+        port=int(os.environ["API_PORT"])
+    )

@@ -1,0 +1,8 @@
+KIML_ID=<kiml-id>
+KIML_PW=<kiml-password>
+KIML_WORKSPACE=<kiml-workspace>
+API_HOST=0.0.0.0
+API_PORT=8000
+POSTGRES_ASYNC_URL=postgresql+asyncpg://postgres:kimlpassword@postgres:5432/postgres
+POSTGRES_SYNC_URL=postgresql://postgres:kimlpassword@postgres:5432/postgres
+REDIS_URL=redis://default:kimlpassword@redis-job-database:6379

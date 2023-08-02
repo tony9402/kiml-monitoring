@@ -1,41 +1,21 @@
 <link rel="icon" href="https://avatars.githubusercontent.com/u/30228292?s=96&v=4"/>
 <title>Dashboard</title>
-<meta http-equiv="refresh" content="60">
+<meta http-equiv="refresh" content="5">
 <div class="container">
     <div class="table-container">
         <table>
             <th>seq</th>
             <th>status</th>
-            <th>run name</th>
-            <th>experiment name</th>
-            <th>image</th>
-            <th>instance type</th>
-            <th>create time</th>
-            <th>start time</th>
-            <th>end time</th>
-            <th>elapsed time</th>
-            <th>tensorboard</th>
+            <th>uuid</th>
+            <th>run_name</th>
+            <th>cancel</th>
             {% for info in logs %}
             <tr>
                 <td>{{loop.index}}</td>
-                <td class="run_status">{{info.status}}</td>
+                <td class="submit_status">{{info.status}}</td>
+                <td>{{info.uuid}}</td>
                 <td>{{info.run_name}}</td>
-                <td>{{info.experiment_name}}</td>
-                <td>{{info.image}}</td>
-                <td>{{info.instance_type}}</td>
-                <td>{{info.create_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
-                {% if info.start_time %}
-                    <td class="start_time">{{info.start_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
-                {% else %}
-                    <td class="start_time"></td>
-                {% endif %}
-                {% if info.end_time %}
-                    <td class="end_time">{{info.end_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
-                {% else %}
-                    <td class="end_time"></td>
-                {% endif %}
-                <td class="elapsed_time"></td>
-                <td><a href="https://tensorboard.ml.kakaoicloud-kr-gov.com/{{info.experiment_id}}/tensorboard/#scalars&_smoothingWeight=0" target="_blank">Link</a></td>
+                <td><button onclick="cancel_btn('{{info.uuid}}')">cancel</button></td>
             </tr>
             {% endfor %}
         </table>
@@ -48,7 +28,7 @@
         overflow: auto hidden;
     }
     .container {
-        width: max(100%, 1800px);
+        width: device-width; /*max(100%, 1800px);*/
         height: max(100%, 500px);
         margin: 0 auto;
         /*border: dashed 1px black;*/
@@ -162,4 +142,20 @@ window.addEventListener('DOMContentLoaded', function() {
     update_time();
 });
 setInterval(update_time, 1000);
+
+function cancel_btn(uuid) {
+    fetch("http://0.0.0.0:12345/cancel", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            "uuid": uuid
+        }),
+    }).then((res) => {
+        return res.json();
+    }).then((json) => {
+        console.log(json);
+    })
+};
 </script>

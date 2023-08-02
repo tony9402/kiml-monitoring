@@ -1,17 +1,47 @@
-from fastapi import APIRouter
-from fastapi import status, Depends
-from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+import json
 
-router = APIRouter(prefix="")
+from fastapi import APIRouter, Depends, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy import select
+
+from models.status import StatusDao
+from postgresdb import get_db_session
+from redisdb import get_redis_sess
+
+router = APIRouter(prefix="/dashboard")
 
 templates = Jinja2Templates(directory="templates")
 
-@router.get(
-    "/dashboard",
-    response_class=HTMLResponse,
-)
-async def dashboard(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request, "logs": []})
+
+@router.get("/kiml", response_class=HTMLResponse)
+async def dashboard(request: Request, db=Depends(get_db_session)):
+    query = select(StatusDao).order_by(StatusDao.create_time.desc())
+    result = await db.execute(query)
+    datas = result.fetchall()
+    logs = [x[0].__dict__ for x in datas]
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "logs": logs}
+    )  # noqa: E501
+
+
+@router.get(path="/submit", response_class=HTMLResponse)
+async def show_submit(request: Request, db=Depends(get_redis_sess)):
+    logs = []
+    for key, value in db.hgetall("status").items():
+        query = db.hget("run_info", key)
+        query = json.loads(query)
+        logs.append(
+            {
+                "uuid": key,
+                "status": value,
+                "run_name": query["run_name"],
+            }
+        )
+    return templates.TemplateResponse(
+        "status.html",
+        {
+            "request": request,
+            "logs": logs,
+        },
+    )
