@@ -41,4 +41,18 @@ python main.py --yaml sample.yaml
 
 ## Preview
 
-**TODO** 추가 예정
+특별한 기능 없고 한 눈에 보고 여러 실험을 Queue에 넣어 알아서 순차적으로 제출될 수 있도록 하기 위해 매우 Simple하게 만들었습니다.  
+**제출량과 실험이 적을 것으로 생각하여 Redis에서 데이터가 사라지지 않도록 해놨으니 상당히 많은 실험을 하실 경우 수정해야할 수 있습니다.**
+
+### 1. KiML Dashboard
+
+맨 오른쪽에 있는 Link를 통해 해당 실험 Tensorboard에 바로 접속할 수 있습니다.
+
+![KiML](https://github.com/tony9402/kiml-monitoring/assets/30228292/1fe3f946-0aec-4d1d-9d65-5f1b5fd900d3)
+
+### 2. Submit Dashboard
+
+맨 오른쪽에 있는 Cancel을 통해 Pending 중인 작업을 취소할 수 있습니다.
+
+![Submit](https://github.com/tony9402/kiml-monitoring/assets/30228292/041dfc84-30e4-4222-80ca-706ed2087200)
+
