@@ -1,7 +1,7 @@
 <link rel="icon" href="https://avatars.githubusercontent.com/u/30228292?s=96&v=4"/>
 <title>Dashboard</title>
 <meta http-equiv="refresh" content="10">
-<div class="container">
+<div class="container" onload="convertAndDisplay()">
     <div class="table-container">
         <table>
             <th>seq</th>
@@ -23,16 +23,16 @@
                 <td>{{info.experiment_name}}</td>
                 <td>{{info.image}}</td>
                 <td>{{info.instance_type}}</td>
-                <td>{{info.create_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+                <td class="time">{{info.create_time.astimezone(timezone).strftime("%Y-%m-%d %H:%M:%S") }}</td>
                 {% if info.start_time %}
-                    <td class="start_time">{{info.start_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+			<td class="start_time time">{{info.start_time.astimezone(timezone).strftime("%Y-%m-%d %H:%M:%S") }}</td>
                 {% else %}
-                    <td class="start_time"></td>
+                    <td class="start_time time"></td>
                 {% endif %}
                 {% if info.end_time %}
-                    <td class="end_time">{{info.end_time.strftime("%Y-%m-%d %H:%M:%S")}}</td>
+		<td class="end_time time">{{info.end_time.astimezone(timezone).strftime("%Y-%m-%d %H:%M:%S") }}</td>
                 {% else %}
-                    <td class="end_time"></td>
+                    <td class="end_time time"></td>
                 {% endif %}
                 <td class="elapsed_time"></td>
                 <td><a href="https://tensorboard.ml.kakaoicloud-kr-gov.com/{{info.experiment_id}}/tensorboard/#scalars&_smoothingWeight=0" target="_blank">Link</a></td>
@@ -86,7 +86,8 @@
         background-color: white !important;
     }
 </style>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.36/moment-timezone-with-data.min.js"></script>
 <script>
 function displayToggle() {
     var a = document.getElementsByClassName('finetuned_path');

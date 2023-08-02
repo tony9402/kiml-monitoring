@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
@@ -21,7 +22,12 @@ async def dashboard(request: Request, db=Depends(get_db_session)):
     datas = result.fetchall()
     logs = [x[0].__dict__ for x in datas]
     return templates.TemplateResponse(
-        "index.html", {"request": request, "logs": logs}
+        "index.html",
+        {
+            "request": request, 
+            "logs": logs, 
+            "timezone": datetime.timezone(datetime.timedelta(hours=9))
+        }
     )  # noqa: E501
 
 
@@ -43,5 +49,6 @@ async def show_submit(request: Request, db=Depends(get_redis_sess)):
         {
             "request": request,
             "logs": logs,
+            "timezone": datetime.timezone(datetime.timedelta(hours=9)),
         },
     )
