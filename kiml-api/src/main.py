@@ -28,7 +28,5 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 if __name__ == "__main__":
     load_dotenv()
     uvicorn.run(
-        app=app, 
-        host=os.environ["API_HOST"], 
-        port=int(os.environ["API_PORT"])
-    )
+        app=app, host=os.environ["API_HOST"], port=int(os.environ["API_PORT"])
+    )  # noqa: E501
