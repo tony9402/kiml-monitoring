@@ -39,6 +39,9 @@ def update():
 
     print("Updated")
     sess.bulk_update_mappings(StatusDao, update_datas)
+    sess.commit()
+    sess.flush()
+    sess.close()
 
 
 def consumer():
