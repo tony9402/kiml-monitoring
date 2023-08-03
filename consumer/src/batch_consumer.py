@@ -2,14 +2,13 @@ import os
 import time
 
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 from kiml.login import login_kiml
 from kiml.run import get_run_list
 from kiml.utils import convert_run_dict
 from kiml.workspace import kiml_set_workspace
 from models.status import StatusDao
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 def batch():

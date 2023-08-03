@@ -3,12 +3,11 @@ import os
 import time
 
 from dotenv import load_dotenv
-from redis_om import get_redis_connection
-
 from kiml.github import clone_or_pull
 from kiml.login import login_kiml
 from kiml.submit import submit
 from kiml.workspace import kiml_set_workspace
+from redis_om import get_redis_connection
 
 
 def consumer():

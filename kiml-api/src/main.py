@@ -4,9 +4,8 @@ import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
-from starlette.middleware.cors import CORSMiddleware
-
 from routers import dashboard, submit
+from starlette.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 

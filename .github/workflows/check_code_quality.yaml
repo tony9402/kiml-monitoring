@@ -12,7 +12,7 @@ jobs:
       - name: Install black
         run: pip install black
       - name: run black
-        run: black **/*.py --check
+        run: black */**/*.py --check
 
   check-imports:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
       - name: Install isort
         run: pip install isort
       - name: run isort
-        run: isort **/*.py --check-only
+        run: isort */**/*.py --check-only
 
   check-pep8:
     runs-on: ubuntu-latest
@@ -30,7 +30,7 @@ jobs:
       - name: Install flake8
         run: pip install flake8
       - name: run flake8
-        run: flake8 **/*.py
+        run: flake8 */**/*.py
 
   check-mypy:
     runs-on: ubuntu-latest

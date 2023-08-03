@@ -1,14 +1,13 @@
-import json
 import datetime
+import json
 
 from fastapi import APIRouter, Depends, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import select
-
 from models.status import StatusDao
 from postgresdb import get_db_session
 from redisdb import get_redis_sess
+from sqlalchemy import select
 
 router = APIRouter(prefix="/dashboard")
 
@@ -24,10 +23,10 @@ async def dashboard(request: Request, db=Depends(get_db_session)):
     return templates.TemplateResponse(
         "index.html",
         {
-            "request": request, 
-            "logs": logs, 
-            "timezone": datetime.timezone(datetime.timedelta(hours=9))
-        }
+            "request": request,
+            "logs": logs,
+            "timezone": datetime.timezone(datetime.timedelta(hours=9)),
+        },
     )  # noqa: E501
 
 
