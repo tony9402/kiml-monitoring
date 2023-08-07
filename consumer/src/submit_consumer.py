@@ -51,14 +51,18 @@ def consumer():
                     msg = "Success !"
                     break
                 except Exception as e:
-                    error_info = json.loads(e.body)
-                    error_code = error_info["ecode"]
-                    if error_code == "40030":
-                        time.sleep(2)
-                        continue
-                    else:
-                        failed = True
-                        msg = error_info["message"]
+                    try:
+                        error_info = json.loads(e.body)
+                        error_code = error_info["ecode"]
+                        if error_code == "40030":
+                            time.sleep(2)
+                            continue
+                        else:
+                            failed = True
+                            msg = error_info["message"]
+                            break
+                    except Exception as parsing_error:
+                        print(parsing_error)
                         break
 
             if failed:
